@@ -7,4 +7,8 @@ class Book < ApplicationRecord
     def currently_borrowed?
         status == "borrowed"
     end
+
+    def latest_borrowing
+        borrowings.order(created_at: :desc).first
+      end
 end

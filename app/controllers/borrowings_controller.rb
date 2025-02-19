@@ -2,7 +2,10 @@ class BorrowingsController < ApplicationController
   before_action :set_book, only: [:create, :update]
 
   def create
-    @borrowing = @book.borrowings.new(borrowing_params.merge(borrowed_at: Time.now))
+    @borrowing = @book.borrowings.new(
+      borrower_name: params[:borrowing][:borrower_name],
+      borrowed_at: Time.now
+    )
 
     if @borrowing.save
       @book.update(status: "borrowed")
@@ -31,6 +34,11 @@ class BorrowingsController < ApplicationController
 
   def borrowing_params
     params.require(:borrowing).permit(:borrower_name)
+  end
+
+  def index
+    @borrower_name = params[:borrower_name]
+    @borrowings = Borrowing.where(borrower_name: @borrower_name).order(created_at: :desc)
   end
 end
 

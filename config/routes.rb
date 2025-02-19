@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   resources :books do
     resources :borrowings, only: [:create, :update]
   end
+
+  get "borrowings", to: "borrowings#index", as: "borrowings"
 end

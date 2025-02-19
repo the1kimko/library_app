@@ -1,23 +1,37 @@
 <h1><%= @book.title %></h1>
 <p><strong>Author:</strong> <%= @book.author %></p>
-<p><%= @book.description %></p>
 <p><strong>Status:</strong> <%= @book.status %></p>
 
 <% if @book.currently_borrowed? %>
   <h3>Return Book</h3>
-  <%= button_to "Return", book_borrowing_path(@book, @book.borrowings.last), method: :patch %>
+  <%= button_to "Return", book_borrowing_path(@book, @book.latest_borrowing), method: :patch %>
 <% else %>
   <h3>Borrow Book</h3>
   <%= form_with model: [@book, Borrowing.new], local: true do |form| %>
-    <p><%= form.label :borrower_name %> <%= form.text_field :borrower_name %></p>
+    <p><%= form.label :borrower_name, "Borrower's Name" %> <%= form.text_field :borrower_name %></p>
     <%= form.submit "Borrow" %>
   <% end %>
 <% end %>
 
 <h3>Borrowing History</h3>
-<ul>
-  <% @borrowings.each do |borrowing| %>
-    <li><%= borrowing.borrower_name %> - Borrowed: <%= borrowing.borrowed_at %> | Returned: <%= borrowing.returned_at || "Not yet" %></li>
-  <% end %>
-</ul>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Borrower</th>
+      <th>Borrowed At</th>
+      <th>Returned At</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @book.borrowings.each do |borrowing| %>
+      <tr>
+        <td><%= borrowing.borrower_name %></td>
+        <td><%= borrowing.borrowed_at %></td>
+        <td><%= borrowing.returned_at || "Not returned yet" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "Back to Books", books_path %>
 
