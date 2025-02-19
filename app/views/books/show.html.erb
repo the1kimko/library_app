@@ -1,0 +1,23 @@
+<h1><%= @book.title %></h1>
+<p><strong>Author:</strong> <%= @book.author %></p>
+<p><%= @book.description %></p>
+<p><strong>Status:</strong> <%= @book.status %></p>
+
+<% if @book.currently_borrowed? %>
+  <h3>Return Book</h3>
+  <%= button_to "Return", book_borrowing_path(@book, @book.borrowings.last), method: :patch %>
+<% else %>
+  <h3>Borrow Book</h3>
+  <%= form_with model: [@book, Borrowing.new], local: true do |form| %>
+    <p><%= form.label :borrower_name %> <%= form.text_field :borrower_name %></p>
+    <%= form.submit "Borrow" %>
+  <% end %>
+<% end %>
+
+<h3>Borrowing History</h3>
+<ul>
+  <% @borrowings.each do |borrowing| %>
+    <li><%= borrowing.borrower_name %> - Borrowed: <%= borrowing.borrowed_at %> | Returned: <%= borrowing.returned_at || "Not yet" %></li>
+  <% end %>
+</ul>
+
